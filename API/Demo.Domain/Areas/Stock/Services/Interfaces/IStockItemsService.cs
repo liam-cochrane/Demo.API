@@ -9,6 +9,8 @@ namespace Demo.Domain.Areas.Stock.Services.Interfaces
 
         public ShowStockItemModel GetShowModel(long id);
 
+        public ShowStockItemModel GetShowModelByCode(string code);
+
         public UpdateStockItemModel GetUpdateModel(long id);
 
         public void SaveUpdateModel(long id, UpdateStockItemModel model);

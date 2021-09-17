@@ -45,6 +45,21 @@ namespace DemoAPI.Areas.Companies.Controllers
             }
         }
 
+        [HttpGet("By")]
+        public ActionResult<ShowStockItemModel> ShowByCode(string code)
+        {
+            var response = _service.GetShowModelByCode(code);
+
+            if (response == null)
+            {
+                return BadRequest();
+            }
+            else
+            {
+                return response;
+            }
+        }
+
         [HttpGet("New")]
         public ActionResult<CreateStockItemModel> New()
         {

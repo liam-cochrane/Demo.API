@@ -55,6 +55,19 @@ namespace Demo.Domain.Areas.Stock.Services
             }
         }
 
+        public ShowStockItemModel GetShowModelByCode(string code)
+        {
+            var dbEntity = _dc.StockItems.FirstOrDefault(x => x.ItemCode == code);
+            if (dbEntity == null)
+            {
+                return null;
+            }
+            else
+            {
+                return new ShowStockItemModel(dbEntity);
+            }
+        }
+
         public UpdateStockItemModel GetUpdateModel(long id)
         {
             var dbEntity = _dc.StockItems.Find(id);
