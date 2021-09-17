@@ -1,5 +1,4 @@
-﻿using Demo.Data;
-using Demo.Domain.Areas.Stock.Models.Units;
+﻿using Demo.Domain.Areas.Stock.Models.Units;
 using Demo.Domain.Areas.Stock.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,18 +13,18 @@ namespace DemoAPI.Areas.Companies.Controllers
     public class UnitsController : ControllerBase
     {
         private readonly ILogger<UnitsController> _logger;
-        private readonly UnitsService service;
+        private readonly IUnitsService _service;
 
-        public UnitsController(DataContext dbContext, ILogger<UnitsController> logger)
+        public UnitsController(IUnitsService service, ILogger<UnitsController> logger)
         {
             _logger = logger;
-            service = new UnitsService(dbContext);
+            _service = service;
         }
 
         [HttpGet]
         public ActionResult<IEnumerable<ShowUnitModel>> Index([FromQuery] UnitSearchModel search)
         {
-            var response = service.GetIndexModel(search);
+            var response = _service.GetIndexModel(search);
 
             return Ok(response);
         }
@@ -33,7 +32,7 @@ namespace DemoAPI.Areas.Companies.Controllers
         [HttpGet("{id:long}")]
         public ActionResult<ShowUnitModel> Show(long id)
         {
-            var response = service.GetShowModel(id);
+            var response = _service.GetShowModel(id);
 
             if (response == null)
             {
@@ -48,7 +47,7 @@ namespace DemoAPI.Areas.Companies.Controllers
         [HttpGet("New")]
         public ActionResult<CreateUnitModel> New()
         {
-            var response = service.GetCreateModel();
+            var response = _service.GetCreateModel();
             return response;
         }
 
@@ -58,7 +57,7 @@ namespace DemoAPI.Areas.Companies.Controllers
         {
             try
             {
-                var response = service.SaveCreateModel(model);
+                var response = _service.SaveCreateModel(model);
                 return CreatedAtAction(nameof(UnitsController.Show), new { id = response.UnitId }, response);
             }
             catch (Exception ex)
@@ -70,7 +69,7 @@ namespace DemoAPI.Areas.Companies.Controllers
         [HttpGet("{id:long}/Edit")]
         public ActionResult<UpdateUnitModel> Edit(long id)
         {
-            var response = service.GetUpdateModel(id);
+            var response = _service.GetUpdateModel(id);
 
             if (response == null)
             {
@@ -87,7 +86,7 @@ namespace DemoAPI.Areas.Companies.Controllers
         {
             try
             {
-                service.SaveUpdateModel(id, model);
+                _service.SaveUpdateModel(id, model);
                 return Ok();
             }
             catch (KeyNotFoundException)
@@ -102,7 +101,7 @@ namespace DemoAPI.Areas.Companies.Controllers
         {
             try
             {
-                service.Delete(id);
+                _service.Delete(id);
                 return NoContent();
             }
             catch (KeyNotFoundException)

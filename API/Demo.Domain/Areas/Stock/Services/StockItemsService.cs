@@ -1,24 +1,19 @@
 ﻿using Demo.Data;
 using Demo.Data.Objects;
 using Demo.Domain.Areas.Stock.Models.StockItems;
-using System;
+using Demo.Domain.Areas.Stock.Services.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Demo.Domain.Areas.Stock.Services
 {
-    public class StockItemsService : IDisposable
+    public class StockItemsService : IStockItemsService
     {
         private readonly DataContext _dc;
 
         public StockItemsService(DataContext context)
         {
             _dc = context;
-        }
-
-        public void Dispose()
-        {
-            _dc.Dispose();
         }
 
         public IEnumerable<ShowStockItemModel> GetIndexModel(StockItemSearchModel search)
