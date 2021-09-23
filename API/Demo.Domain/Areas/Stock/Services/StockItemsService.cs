@@ -1,5 +1,8 @@
 ﻿using Demo.Data;
 using Demo.Data.Objects;
+using Demo.Domain.Areas.Core.Helpers;
+using Demo.Domain.Areas.Core.Models;
+using Demo.Domain.Areas.Stock.Helpers;
 using Demo.Domain.Areas.Stock.Models.StockItems;
 using Demo.Domain.Areas.Stock.Services.Interfaces;
 using System.Collections.Generic;
@@ -16,21 +19,12 @@ namespace Demo.Domain.Areas.Stock.Services
             _dc = context;
         }
 
-        public IEnumerable<ShowStockItemModel> GetIndexModel(StockItemSearchModel search)
+        public IEnumerable<ShowStockItemModel> GetIndexModel(StockItemSearchModel search, PagingModel paging)
         {
             var dbEntities = _dc.StockItems.AsQueryable();
 
-            if (search != null)
-            {
-                if (!string.IsNullOrEmpty(search.Term))
-                {
-                    var words = search.Term.ToUpper().Split(' ');
-                    foreach (var word in words)
-                    {
-                        dbEntities = dbEntities.Where(x => x.Description.ToUpper().Contains(word) || x.ItemCode.ToUpper().Contains(word));
-                    }
-                }
-            }
+            dbEntities = dbEntities.ApplySearch(search);
+            dbEntities = dbEntities.ApplyPaging(paging);
 
             var model = new List<ShowStockItemModel>();
 

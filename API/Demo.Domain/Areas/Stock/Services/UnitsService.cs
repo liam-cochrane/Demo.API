@@ -1,5 +1,8 @@
 ﻿using Demo.Data;
 using Demo.Data.Objects;
+using Demo.Domain.Areas.Core.Helpers;
+using Demo.Domain.Areas.Core.Models;
+using Demo.Domain.Areas.Stock.Helpers;
 using Demo.Domain.Areas.Stock.Models.Units;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,25 +18,12 @@ namespace Demo.Domain.Areas.Stock.Services
             _dc = context;
         }
 
-        public IEnumerable<ShowUnitModel> GetIndexModel(UnitSearchModel search)
+        public IEnumerable<ShowUnitModel> GetIndexModel(UnitSearchModel search, PagingModel paging)
         {
             var dbEntities = _dc.Units.AsQueryable();
 
-            if (search != null)
-            {
-                if (!string.IsNullOrEmpty(search.Term))
-                {
-                    var words = search.Term.ToUpper().Split(' ');
-                    foreach (var word in words)
-                    {
-                        dbEntities = dbEntities.Where(x => x.Name.ToUpper().Contains(word));
-                    }
-                }
-                if (search.StockItemId.HasValue)
-                {
-                    dbEntities = dbEntities.Where(x => x.StockItemUnits.Any(y => y.StockItem.StockItemId == search.StockItemId));
-                }
-            }
+            dbEntities = dbEntities.ApplySearch(search);
+            dbEntities = dbEntities.ApplyPaging(paging);
 
             var model = new List<ShowUnitModel>();
 
@@ -43,6 +33,14 @@ namespace Demo.Domain.Areas.Stock.Services
             }
 
             return model;
+        }
+
+        public int GetCount(UnitSearchModel search)
+        {
+            var dbEntities = _dc.Units.AsQueryable();
+            dbEntities = dbEntities.ApplySearch(search);
+
+            return dbEntities.Count();
         }
 
         public ShowUnitModel GetShowModel(long id)

@@ -1,4 +1,5 @@
-﻿using Demo.Domain.Areas.Stock.Models.StockItems;
+﻿using Demo.Domain.Areas.Core.Models;
+using Demo.Domain.Areas.Stock.Models.StockItems;
 using Demo.Domain.Areas.Stock.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -6,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 
-namespace DemoAPI.Areas.Companies.Controllers
+namespace DemoAPI.Controlllers.Areas.Stock
 {
     [ApiController]
     [Route("[controller]")]
@@ -23,9 +24,9 @@ namespace DemoAPI.Areas.Companies.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<ShowStockItemModel>> Index([FromQuery] StockItemSearchModel search)
+        public ActionResult<IEnumerable<ShowStockItemModel>> Index([FromQuery] StockItemSearchModel search, [FromQuery] PagingModel paging)
         {
-            var response = _service.GetIndexModel(search);
+            var response = _service.GetIndexModel(search, paging);
 
             return Ok(response);
         }

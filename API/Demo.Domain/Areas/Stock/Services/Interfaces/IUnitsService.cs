@@ -1,11 +1,14 @@
-﻿using Demo.Domain.Areas.Stock.Models.Units;
+﻿using Demo.Domain.Areas.Core.Models;
+using Demo.Domain.Areas.Stock.Models.Units;
 using System.Collections.Generic;
 
 namespace Demo.Domain.Areas.Stock.Services
 {
     public interface IUnitsService
     {
-        public IEnumerable<ShowUnitModel> GetIndexModel(UnitSearchModel search);
+        public IEnumerable<ShowUnitModel> GetIndexModel(UnitSearchModel search, PagingModel paging);
+
+        public int GetCount(UnitSearchModel search);
 
         public ShowUnitModel GetShowModel(long id);
 

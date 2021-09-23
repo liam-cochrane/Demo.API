@@ -1,4 +1,5 @@
-﻿using Demo.Domain.Areas.Stock.Models.Units;
+﻿using Demo.Domain.Areas.Core.Models;
+using Demo.Domain.Areas.Stock.Models.Units;
 using Demo.Domain.Areas.Stock.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -6,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 
-namespace DemoAPI.Areas.Companies.Controllers
+namespace DemoAPI.Controlllers.Areas.Stock
 {
     [ApiController]
     [Route("[controller]")]
@@ -22,9 +23,17 @@ namespace DemoAPI.Areas.Companies.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<ShowUnitModel>> Index([FromQuery] UnitSearchModel search)
+        public ActionResult<IEnumerable<ShowUnitModel>> Index([FromQuery] UnitSearchModel search, [FromQuery] PagingModel paging)
         {
-            var response = _service.GetIndexModel(search);
+            var response = _service.GetIndexModel(search, paging);
+
+            return Ok(response);
+        }
+
+        [HttpGet("Count")]
+        public ActionResult<int> Count([FromQuery] UnitSearchModel search)
+        {
+            var response = _service.GetCount(search);
 
             return Ok(response);
         }

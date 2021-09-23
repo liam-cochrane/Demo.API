@@ -22,6 +22,8 @@ namespace Demo.API
         {
             services.AddDataContext();
             services.RegisterStockServices();
+            services.RegisterContactServices();
+            services.RegisterUserServices();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {

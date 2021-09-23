@@ -1,5 +1,8 @@
 ﻿using Demo.Data;
 using Demo.Data.Objects;
+using Demo.Domain.Areas.Core.Helpers;
+using Demo.Domain.Areas.Core.Models;
+using Demo.Domain.Areas.Stock.Helpers;
 using Demo.Domain.Areas.Stock.Models.StockItemUnits;
 using System.Collections.Generic;
 
@@ -14,14 +17,12 @@ namespace Demo.Domain.Areas.Stock.Services
             _dc = context;
         }
 
-        public IEnumerable<ShowStockItemUnitModel> GetIndexModel(StockItemUnitSearchModel search)
+        public IEnumerable<ShowStockItemUnitModel> GetIndexModel(StockItemUnitSearchModel search, PagingModel paging)
         {
             var dbEntities = _dc.StockItemUnits.AsQueryable();
 
-            if (search != null)
-            {
-
-            }
+            dbEntities = dbEntities.ApplySearch(search);
+            dbEntities = dbEntities.ApplyPaging(paging);
 
             var model = new List<ShowStockItemUnitModel>();
 

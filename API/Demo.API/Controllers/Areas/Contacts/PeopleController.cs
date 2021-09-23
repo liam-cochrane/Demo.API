@@ -1,37 +1,46 @@
-﻿using Demo.Domain.Areas.Core.Models;
-using Demo.Domain.Areas.Stock.Models.StockItemUnits;
-using Demo.Domain.Areas.Stock.Services;
+﻿using Demo.Domain.Areas.Contacts.Models.People;
+using Demo.Domain.Areas.Contacts.Services.Interfaces;
+using Demo.Domain.Areas.Core.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 
-namespace DemoAPI.Controlllers.Areas.Stock
+namespace DemoAPI.Controllers.Areas.Contacts
 {
     [ApiController]
     [Route("[controller]")]
-    public class StockItemUnitsController : ControllerBase
+    public class PeopleController : ControllerBase
     {
-        private readonly ILogger<StockItemUnitsController> _logger;
-        private readonly IStockItemUnitsService _service;
+        private readonly ILogger<PeopleController> _logger;
+        private readonly IPeopleService _service;
 
-        public StockItemUnitsController(IStockItemUnitsService service, ILogger<StockItemUnitsController> logger)
+        public PeopleController(IPeopleService service, ILogger<PeopleController> logger)
         {
             _logger = logger;
             _service = service;
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<ShowStockItemUnitModel>> Index([FromQuery] StockItemUnitSearchModel search, [FromQuery] PagingModel paging)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public ActionResult<IEnumerable<ShowPersonModel>> Index([FromQuery] PersonSearchModel search, [FromQuery] PagingModel paging)
         {
             var response = _service.GetIndexModel(search, paging);
 
             return Ok(response);
         }
 
+        [HttpGet("Count")]
+        public ActionResult<int> Count([FromQuery] PersonSearchModel search)
+        {
+            var response = _service.GetCount(search);
+
+            return Ok(response);
+        }
+
         [HttpGet("{id:long}")]
-        public ActionResult<ShowStockItemUnitModel> Show(long id)
+        public ActionResult<ShowPersonModel> Show(long id)
         {
             var response = _service.GetShowModel(id);
 
@@ -45,8 +54,23 @@ namespace DemoAPI.Controlllers.Areas.Stock
             }
         }
 
+        [HttpGet("By")]
+        public ActionResult<ShowPersonModel> ShowByEmail(string email)
+        {
+            var response = _service.GetShowModelByEmail(email);
+
+            if (response == null)
+            {
+                return BadRequest();
+            }
+            else
+            {
+                return response;
+            }
+        }
+
         [HttpGet("New")]
-        public ActionResult<CreateStockItemUnitModel> New()
+        public ActionResult<CreatePersonModel> New()
         {
             var response = _service.GetCreateModel();
             return response;
@@ -54,12 +78,12 @@ namespace DemoAPI.Controlllers.Areas.Stock
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public ActionResult<ShowStockItemUnitModel> Create(CreateStockItemUnitModel model)
+        public ActionResult<ShowPersonModel> Create(CreatePersonModel model)
         {
             try
             {
                 var response = _service.SaveCreateModel(model);
-                return CreatedAtAction(nameof(StockItemUnitsController.Show), new { id = response.StockItemUnitId }, response);
+                return CreatedAtAction(nameof(PeopleController.Show), new { id = response.PersonId }, response);
             }
             catch (Exception ex)
             {
@@ -68,7 +92,7 @@ namespace DemoAPI.Controlllers.Areas.Stock
         }
 
         [HttpGet("{id:long}/Edit")]
-        public ActionResult<UpdateStockItemUnitModel> Edit(long id)
+        public ActionResult<UpdatePersonModel> Edit(long id)
         {
             var response = _service.GetUpdateModel(id);
 
@@ -83,7 +107,7 @@ namespace DemoAPI.Controlllers.Areas.Stock
         }
 
         [HttpPut("{id:long}")]
-        public ActionResult Update(long id, UpdateStockItemUnitModel model)
+        public ActionResult Update(long id, UpdatePersonModel model)
         {
             try
             {

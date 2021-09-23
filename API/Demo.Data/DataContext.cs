@@ -13,6 +13,10 @@ namespace Demo.Data
 
         public DbSet<StockItemUnit> StockItemUnits { get; set; }
 
+        public DbSet<Person> People { get; set; }
+
+        public DbSet<Employee> Employees { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb; Database=EFLab;");
